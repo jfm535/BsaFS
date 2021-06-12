@@ -119,7 +119,7 @@ namespace BsaFS
         public void GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes, out long totalNumberOfFreeBytes)
         {
             freeBytesAvailable = 0;
-            totalNumberOfBytes = (long) myArchiveReader.Files.Sum(mfile => mfile.Size);
+            totalNumberOfBytes = myArchiveReader.Files.Sum(mfile => mfile.Size);
             totalNumberOfFreeBytes = 0;
         }
 
