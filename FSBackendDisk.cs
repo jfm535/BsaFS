@@ -76,7 +76,9 @@ namespace BsaFS
 
         public IList<FileInformation> FindFiles(string directory, string searchPattern)
         {
+            var filelist = new List<FileInformation>();
             var mdir = directory.TrimStart('\\');
+            var Patterntrim = searchPattern.TrimStart('\\');
             if (mdir == "")
             {
                 return FindFilesRootDir();
