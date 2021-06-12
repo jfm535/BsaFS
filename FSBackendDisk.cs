@@ -43,11 +43,9 @@ namespace BsaFS
 
         public bool DirectoryExists(string path)
         {
-            if (path == "")
-            {
-                return true;
-            }
-            var tryGetFolder = myArchiveReader.TryGetFolder(path, out var mfolder);
+            if (path == "") return true;
+            var tryGetFolder =
+                myArchiveReader.Files.Any(mfile => mfile.Path.StartsWith(path) && !mfile.Path.Equals(path));
             return tryGetFolder;
         }
 
