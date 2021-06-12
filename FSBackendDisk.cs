@@ -38,7 +38,8 @@ namespace BsaFS
         public bool IsDirectory(string path)
         {
             if (path == "") return true;
-            return myArchiveReader.Files.All(mfile => mfile.Path != path);
+            var isDirectory = myArchiveReader.Files.All(mfile => mfile.Path != path);
+            return isDirectory;
         }
 
         public bool DirectoryExists(string path)
