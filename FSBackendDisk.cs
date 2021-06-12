@@ -78,7 +78,8 @@ namespace BsaFS
 
         public IList<FileInformation> FindFiles(string directory, string searchPattern)
         {
-            if (directory == "\\")
+            var mdir = directory.TrimStart('\\');
+            if (mdir == "")
             {
                 var listOfFoldersAndFiles = new HashSet<FileInformation>();
                 var filePaths = myArchiveReader.Files.Select(mfile => mfile.Path);
