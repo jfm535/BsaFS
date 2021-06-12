@@ -1,3 +1,4 @@
+using System;
 using Mutagen.Bethesda.Archives;
 using NC.DokanFS;
 
@@ -13,14 +14,15 @@ namespace BsaFS
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
+            return;
         }
 
         public int Read(byte[] buffer, long offset)
         {
-            var mslice = _archiveFile.GetSpan()[(int) offset..];
-            buffer = mslice.ToArray();
-            return mslice.Length;
+            var mslice = _archiveFile.GetBytes();
+            var min = (buffer.Length < mslice.Length ? buffer.Length : mslice.Length);
+            Array.Copy(mslice,buffer,min);
+            return min;
         }
 
         public void Write(byte[] buffer, long offset)
