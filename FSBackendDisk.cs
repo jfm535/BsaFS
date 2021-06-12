@@ -113,12 +113,23 @@ namespace BsaFS
 
         public bool GetFileInfo(string path, out FileInformation fi)
         {
-            if (path == "")
+            fi = new FileInformation();
+            //handle directory
+            if (path == "" || IsDirectory(path))
             {
-                fi = new FileInformation {Attributes = FileAttributes.Directory};
+                fi.Attributes = FileAttributes.Directory;
                 return true;
             }
-            throw new NotImplementedException();
+            //handle file doesnt exist
+            if (!FileExists(path)) return false;
+            
+            //handle file
+            var thefile = myArchiveReader.Files.Single(mfile => mfile.Path == path);
+            fi.Attributes = FileAttributes.Normal;
+            fi.Length = thefile.Size;
+            fi.FileName = Path.GetFileName(path);
+            return true;
+
         }
 
         public void GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes, out long totalNumberOfFreeBytes)
