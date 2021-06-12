@@ -8,7 +8,7 @@ namespace BsaFS
     {
         static void Main(string[] args)
         {
-            var testing = Mutagen.Bethesda.Archives.Archive.CreateReader(GameRelease.SkyrimSE, "D:\\Modding\\SkyrimSE\\mods\\CreativeClubStuff\\ccbgssse014-spellpack01.bsa");
+            var testing = Mutagen.Bethesda.Archives.Archive.CreateReader(GameRelease.SkyrimSE, args[0]);
             var crossdrive = new FSBackendDisk(testing);
             var dokan = new DokanFrontend(crossdrive, "CrossDrive");
             dokan.Mount(@"H:\");
