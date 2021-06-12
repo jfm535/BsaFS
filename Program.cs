@@ -1,4 +1,6 @@
 ﻿using System;
+using Mutagen.Bethesda;
+using NC.DokanFS;
 
 namespace BsaFS
 {
@@ -6,7 +8,15 @@ namespace BsaFS
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var testing = Mutagen.Bethesda.Archives.Archive.CreateReader(GameRelease.SkyrimSE, "D:\\Modding\\SkyrimSE\\mods\\CreativeClubStuff\\ccbgssse014-spellpack01.bsa");
+            var crossdrive = new FSBackendDisk(testing);
+            var dokan = new DokanFrontend(crossdrive, "CrossDrive");
+            dokan.Mount(@"H:\");
+
+            Console.WriteLine("Press ENTER to Exit.");
+            Console.Read();
+
+            dokan.Unmount();
         }
     }
 }

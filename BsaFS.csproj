@@ -6,7 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Shaman.Dokan.Base" Version="1.0.0.1" />
+      <PackageReference Include="Mutagen.Bethesda" Version="0.30.4-prerelease002" />
+      <PackageReference Include="NC-DokanFsBase" Version="0.1.1" />
     </ItemGroup>
 
 </Project>
