@@ -81,30 +81,36 @@ namespace BsaFS
             var mdir = directory.TrimStart('\\');
             if (mdir == "")
             {
-                var listOfFoldersAndFiles = new HashSet<FileInformation>();
-                var filePaths = myArchiveReader.Files.Select(mfile => mfile.Path);
-                foreach (var filePath in filePaths)
-                {
-                    if (filePath.Contains("\\"))
-                    {
-                        listOfFoldersAndFiles.Add(new FileInformation
-                        {
-                            Attributes = FileAttributes.Directory,
-                            FileName = filePath.Split("\\")[0]
-                        });
-                    }
-                    else
-                    {
-                        listOfFoldersAndFiles.Add(new FileInformation
-                        {
-                            Attributes = FileAttributes.Normal,
-                            FileName = filePath
-                        });
-                    }
-                }
-                return listOfFoldersAndFiles.ToList();
+                return FindFilesRootDir();
             }
             throw new NotImplementedException();
+        }
+
+        private IList<FileInformation> FindFilesRootDir()
+        {
+            var listOfFoldersAndFiles = new HashSet<FileInformation>();
+            var filePaths = myArchiveReader.Files.Select(mfile => mfile.Path);
+            foreach (var filePath in filePaths)
+            {
+                if (filePath.Contains("\\"))
+                {
+                    listOfFoldersAndFiles.Add(new FileInformation
+                    {
+                        Attributes = FileAttributes.Directory,
+                        FileName = filePath.Split("\\")[0]
+                    });
+                }
+                else
+                {
+                    listOfFoldersAndFiles.Add(new FileInformation
+                    {
+                        Attributes = FileAttributes.Normal,
+                        FileName = filePath
+                    });
+                }
+            }
+
+            return listOfFoldersAndFiles.ToList();
         }
 
         public bool GetFileInfo(string path, out FileInformation fi)
