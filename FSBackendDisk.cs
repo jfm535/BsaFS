@@ -52,7 +52,7 @@ namespace BsaFS
 
         public bool IsDirectoryEmpty(string path)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public void DeleteDirectory(string path)
