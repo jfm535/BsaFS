@@ -5,7 +5,6 @@ using System.Linq;
 using DokanNet;
 using Mutagen.Bethesda.Archives;
 using NC.DokanFS;
-using NC.DokanFS.Specialized;
 using FileAccess = System.IO.FileAccess;
 
 namespace BsaFS
@@ -80,11 +79,82 @@ namespace BsaFS
             var filelist = new List<FileInformation>();
             var mdir = directory.TrimStart('\\');
             var Patterntrim = searchPattern.TrimStart('\\');
+            var JoinedSearch = Path.Join(mdir, Patterntrim);
             if (mdir == "")
             {
                 return FindFilesRootDir();
             }
-            throw new NotImplementedException();
+            //Handle Joined
+            if (IsDirectory(JoinedSearch) && !JoinedSearch.EndsWith("*"))
+            {
+                var foundFiles = myArchiveReader.Files.Select(mfile => mfile.Path)
+                    .Where(mdir2 => mdir2.StartsWith(JoinedSearch));
+                var StrippedFiles = foundFiles.Select(mdir2 => mdir2.Replace(JoinedSearch,"").TrimStart('\\'));
+                var DirectoryContents = StrippedFiles.Select(mdir2 => mdir2.Split('\\')[0]).Distinct();
+                foreach (var directoryContent in DirectoryContents)
+                {
+                    var fullentry = Path.Join(JoinedSearch, directoryContent);
+                    if (FileExists(fullentry))
+                    {
+                        var mfilea = myArchiveReader.Files.Single(mfile => mfile.Path == fullentry);
+                        filelist.Add(new FileInformation
+                        {
+                            Attributes = FileAttributes.Normal,
+                            FileName = directoryContent,
+                            Length = mfilea.Size
+                        });
+                    }
+                    else
+                    {
+                        filelist.Add(new FileInformation
+                        {
+                            Attributes = FileAttributes.Directory,
+                            FileName = directoryContent
+                        });
+                    }
+                }
+            }
+            if (IsDirectory(mdir) && !FileExists(mdir))
+            {
+                var foundFiles = myArchiveReader.Files.Select(mfile => mfile.Path)
+                    .Where(mdir2 => mdir2.StartsWith(mdir));
+                    var StrippedFiles = foundFiles.Select(mdir2 => mdir2.Replace(mdir,"").TrimStart('\\'));
+                var DirectoryContents = StrippedFiles.Select(mdir2 => mdir2.Split('\\')[0]).Distinct();
+                foreach (var directoryContent in DirectoryContents)
+                {
+                    var fullentry = Path.Join(mdir, directoryContent);
+                    if (FileExists(fullentry))
+                    {
+                        var mfilea = myArchiveReader.Files.Single(mfile => mfile.Path == fullentry);
+                        filelist.Add(new FileInformation
+                        {
+                            Attributes = FileAttributes.Normal,
+                            FileName = directoryContent,
+                            Length = mfilea.Size
+                        });
+                    }
+                    else
+                    {
+                        filelist.Add(new FileInformation
+                        {
+                            Attributes = FileAttributes.Directory,
+                            FileName = directoryContent
+                        });
+                    }
+                }
+            }
+
+            if (FileExists(mdir))
+            {
+                var file = myArchiveReader.Files.Single(mfile => mfile.Path == mdir);
+                filelist.Add(new FileInformation
+                {
+                    Attributes = FileAttributes.Normal,
+                    FileName = System.IO.Path.GetFileName(mdir),
+                    Length = file.Size
+                });
+            }
+            return filelist;
         }
 
         private IList<FileInformation> FindFilesRootDir()
@@ -181,6 +251,6 @@ namespace BsaFS
         public string VolumeLabel { get; }
         public string FileSystemName { get; }
         public FileSystemFeatures FileSystemFeatures => FileSystemFeatures.ReadOnlyVolume;
-        public uint MaximumComponentLength { get; }
+        public uint MaximumComponentLength => 256;
     }
 }
