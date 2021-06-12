@@ -20,7 +20,7 @@ namespace BsaFS
 
         public string GetPath(string osPath)
         {
-            return osPath;
+            return osPath.TrimStart('\\');
         }
 
         public IDokanFileContext CreateFileContext(string path, FileMode mode, FileAccess access, FileShare share = FileShare.None,
@@ -37,13 +37,13 @@ namespace BsaFS
 
         public bool IsDirectory(string path)
         {
-            if (path == "\\") return true;
+            if (path == "") return true;
            return myArchiveReader.TryGetFolder(path, out var mfolder);
         }
 
         public bool DirectoryExists(string path)
         {
-            if (path == "\\")
+            if (path == "")
             {
                 return true;
             }
@@ -108,7 +108,7 @@ namespace BsaFS
 
         public bool GetFileInfo(string path, out FileInformation fi)
         {
-            if (path == "\\")
+            if (path == "")
             {
                 fi = new FileInformation {Attributes = FileAttributes.Directory};
                 return true;
