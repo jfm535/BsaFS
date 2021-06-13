@@ -36,7 +36,7 @@ namespace BsaFS
 
         public void Flush()
         {
-            throw new System.NotImplementedException();
+            return;
         }
 
         public void SetLength(long length)
