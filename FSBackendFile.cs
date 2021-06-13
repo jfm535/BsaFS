@@ -6,22 +6,21 @@ namespace BsaFS
 {
     public class FSBackendFile:IDokanFileContext
     {
-        private IArchiveFile _archiveFile;
+        private byte[] _archiveFile;
         public FSBackendFile(IArchiveFile file)
         {
-            _archiveFile = file;
+            _archiveFile = file.GetBytes();
         }
 
         public void Dispose()
         {
-            return;
+            _archiveFile = null;
         }
 
         public int Read(byte[] buffer, long offset)
         {
-            var mslice = _archiveFile.GetBytes();
-            var min = (buffer.Length < mslice.Length ? buffer.Length : mslice.Length);
-            Array.Copy(mslice,buffer,min);
+            var min = (buffer.Length < _archiveFile.Length ? buffer.Length : _archiveFile.Length);
+            Array.Copy(_archiveFile,buffer,min);
             return min;
         }
 
